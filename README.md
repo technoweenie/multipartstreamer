@@ -35,7 +35,7 @@ func main() {
 ## TODO
 
 * Multiple files?
-* Files a source other than the file system.
+* Add files a source other than the file system.
 
 ## Credits
 
