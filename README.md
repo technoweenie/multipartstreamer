@@ -16,7 +16,7 @@ import (
   "net/http"
 )
 
-func Main() {
+func main() {
   ms := multipartstreamer.New()
 
   ms.Write("file", "path/to/file", map[string]string{
