@@ -35,9 +35,11 @@ func New() (m *MultipartStreamer) {
 // Prepares a file and some form fields to be written to the multipart.Writer.
 // Wraps up both WriteFields() and writeFile().
 //
-// key      - The name of the field for the file data.
+// key - The name of the field for the file data.
+//
 // filename - The name of the file to upload.
-// fields   - A map of form field keys and values.
+//
+// fields - A map of form field keys and values.
 func (m *MultipartStreamer) Write(key, filename string, fields map[string]string) (err error) {
   err = m.WriteFields(fields)
   if err != nil {
@@ -67,7 +69,8 @@ func (m *MultipartStreamer) WriteFields(fields map[string]string) error {
 
 // Prepares a file to be written to the multipart.Writer.
 //
-// key      - The name of the field for the file data.
+// key - The name of the field for the file data.
+//
 // filename - The name of the file to upload.
 func (m *MultipartStreamer) WriteFile(key, filename string) (err error) {
   _, err = m.bodyWriter.CreateFormFile(key, filename)
