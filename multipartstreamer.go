@@ -19,6 +19,10 @@ type MultipartStreamer struct {
 	contentLength int64
 }
 
+// Helps you build multipart for large files without reading the file until the
+// multipart reader is being read.  It does this by creating the file field last
+// and using an io.MultiReader to combine the multipart.Reader with the file
+// handle.  The trailing boundary is manually added in another buffer.
 func New() (m *MultipartStreamer) {
 	m = &MultipartStreamer{bodyBuffer: bytes.NewBufferString("")}
 
