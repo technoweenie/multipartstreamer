@@ -8,6 +8,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+	"path/filepath"
 )
 
 type MultipartStreamer struct {
@@ -77,7 +78,7 @@ func (m *MultipartStreamer) WriteFields(fields map[string]string) error {
 //
 // filename - The name of the file to upload.
 func (m *MultipartStreamer) WriteFile(key, filename string) (err error) {
-	_, err = m.bodyWriter.CreateFormFile(key, filename)
+	_, err = m.bodyWriter.CreateFormFile(key, filepath.Base(filename))
 	if err != nil {
 		return
 	}

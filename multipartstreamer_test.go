@@ -22,7 +22,7 @@ func TestMultipart(t *testing.T) {
 	}
 
 	diff := ms.Len() - stat.Size()
-	if diff != 398 {
+	if diff != 363 {
 		t.Error("Unexpected multipart size")
 	}
 
@@ -56,7 +56,7 @@ func TestMultipart(t *testing.T) {
 		t.Fatalf("Expected file field: %s", err)
 	}
 
-	if str := part.FileName(); str != file {
+	if str := part.FileName(); str != "multipartstreamer.go" {
 		t.Errorf("Unexpected filename: %s", str)
 	}
 
