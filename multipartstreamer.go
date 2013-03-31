@@ -16,7 +16,7 @@ type MultipartStreamer struct {
 	bodyBuffer    *bytes.Buffer
 	bodyWriter    *multipart.Writer
 	closeBuffer   *bytes.Buffer
-	fileHandle    *os.File
+	reader        io.Reader
 	contentLength int64
 }
 
@@ -58,21 +58,25 @@ func (m *MultipartStreamer) WriteFields(fields map[string]string) error {
 // key - The name of the field for the file data.
 //
 // filename - The name of the file to upload.
-func (m *MultipartStreamer) WriteFile(key, filename string) (err error) {
+func (m *MultipartStreamer) WriteFile(key, filename string) error {
+	fh, err := os.Open(filename)
+	if err != nil {
+		return err
+	}
+
+	stat, err := fh.Stat()
+	if err != nil {
+		return err
+	}
+
+	return m.WriteReader(key, filepath.Base(filename), stat.Size(), fh)
+}
+
+func (m *MultipartStreamer) WriteReader(key, filename string, size int64, reader io.Reader) (err error) {
+	m.reader = reader
+	m.contentLength = size
+
 	_, err = m.bodyWriter.CreateFormFile(key, filepath.Base(filename))
-	if err != nil {
-		return
-	}
-
-	m.fileHandle, err = os.Open(filename)
-	if err != nil {
-		return
-	}
-
-	var stat os.FileInfo
-	stat, err = m.fileHandle.Stat()
-	m.contentLength = stat.Size()
-
 	return
 }
 
@@ -94,6 +98,6 @@ func (m *MultipartStreamer) Len() int64 {
 
 // Gets an io.ReadCloser for passing to an http.Request.
 func (m *MultipartStreamer) GetReader() io.ReadCloser {
-	reader := io.MultiReader(m.bodyBuffer, m.fileHandle, m.closeBuffer)
+	reader := io.MultiReader(m.bodyBuffer, m.reader, m.closeBuffer)
 	return ioutil.NopCloser(reader)
 }
