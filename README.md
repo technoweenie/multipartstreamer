@@ -24,6 +24,11 @@ func main() {
     "AWSAccessKeyId":	"ABCDEF",
     "acl":			"some-acl",
   })
+
+  // Add any io.Reader to the multipart.Reader.
+  ms.WriteReader("file", "filename", some_ioReader, size)
+
+  // Shortcut for adding local file.
   ms.WriteFile("file", "path/to/file")
 
   req, _ := http.NewRequest("POST", "someurl", nil)
@@ -32,6 +37,8 @@ func main() {
   res, _ := http.DefaultClient.Do(req)
 }
 ```
+
+One limitation: You can only write a single file.
 
 ## TODO
 

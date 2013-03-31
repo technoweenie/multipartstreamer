@@ -38,8 +38,6 @@ func New() (m *MultipartStreamer) {
 }
 
 // Writes form fields to the multipart.Writer.
-//
-// fields   - A map of form field keys and values.
 func (m *MultipartStreamer) WriteFields(fields map[string]string) error {
 	var err error
 
@@ -53,11 +51,22 @@ func (m *MultipartStreamer) WriteFields(fields map[string]string) error {
 	return nil
 }
 
-// Prepares a file to be written to the multipart.Writer.
+// Adds a reader to of some file content for the multipart.Reader.  This reader
+// is not accessed until the multipart.Reader is copied to some output writer.
+func (m *MultipartStreamer) WriteReader(key, filename string, size int64, reader io.Reader) (err error) {
+	m.reader = reader
+	m.contentLength = size
+
+	_, err = m.bodyWriter.CreateFormFile(key, filepath.Base(filename))
+	return
+}
+
+// Shortcut for adding a local file as an io.Reader.
 //
 // key - The name of the field for the file data.
 //
-// filename - The name of the file to upload.
+// filename - The full path of the file to upload.  Only the basename of the
+//            full path is sent to the multipart.Reader.
 func (m *MultipartStreamer) WriteFile(key, filename string) error {
 	fh, err := os.Open(filename)
 	if err != nil {
@@ -70,14 +79,6 @@ func (m *MultipartStreamer) WriteFile(key, filename string) error {
 	}
 
 	return m.WriteReader(key, filepath.Base(filename), stat.Size(), fh)
-}
-
-func (m *MultipartStreamer) WriteReader(key, filename string, size int64, reader io.Reader) (err error) {
-	m.reader = reader
-	m.contentLength = size
-
-	_, err = m.bodyWriter.CreateFormFile(key, filepath.Base(filename))
-	return
 }
 
 // Sets up the http.Request body, and some crucial HTTP headers.
