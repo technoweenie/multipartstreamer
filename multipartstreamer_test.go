@@ -16,9 +16,14 @@ func TestMultipart(t *testing.T) {
 	stat, _ := os.Stat(file)
 
 	ms := New()
-	err := ms.Write("file", file, map[string]string{"a": "b"})
+	err := ms.WriteFields(map[string]string{"a": "b"})
 	if err != nil {
 		t.Fatalf("Error writing fields: %s", err)
+	}
+
+	err = ms.WriteFile("file", file)
+	if err != nil {
+		t.Fatalf("Error writing file: %s", err)
 	}
 
 	diff := ms.Len() - stat.Size()

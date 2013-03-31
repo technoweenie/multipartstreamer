@@ -19,11 +19,12 @@ import (
 func main() {
   ms := multipartstreamer.New()
 
-  ms.Write("file", "path/to/file", map[string]string{
+  ms.WriteFields(map[string]string{
     "key":			"some-key",
     "AWSAccessKeyId":	"ABCDEF",
     "acl":			"some-acl",
   })
+  ms.WriteFile("file", "path/to/file")
 
   req, _ := http.NewRequest("POST", "someurl", nil)
   ms.SetupRequest(req)
