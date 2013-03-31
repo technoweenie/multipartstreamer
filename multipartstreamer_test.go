@@ -88,7 +88,7 @@ func TestMultipartReader(t *testing.T) {
 		t.Fatalf("Error writing reader: %s", err)
 	}
 
-	if size := ms.Len(); size != 239 {
+	if size := ms.Len(); size != 244 {
 		t.Errorf("Unexpected multipart size: %d", size)
 	}
 
@@ -105,7 +105,7 @@ func TestMultipartReader(t *testing.T) {
 		t.Fatalf("Expected file field: %s", err)
 	}
 
-	if str := part.FileName(); str != "bass" {
+	if str := part.FileName(); str != "code/bass" {
 		t.Errorf("Unexpected filename: %s", str)
 	}
 

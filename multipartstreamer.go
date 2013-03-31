@@ -57,7 +57,7 @@ func (m *MultipartStreamer) WriteReader(key, filename string, size int64, reader
 	m.reader = reader
 	m.contentLength = size
 
-	_, err = m.bodyWriter.CreateFormFile(key, filepath.Base(filename))
+	_, err = m.bodyWriter.CreateFormFile(key, filename)
 	return
 }
 
