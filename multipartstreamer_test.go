@@ -10,7 +10,7 @@ import (
 	"testing"
 )
 
-func TestMultipart(t *testing.T) {
+func TestMultipartFile(t *testing.T) {
 	path, _ := os.Getwd()
 	file := filepath.Join(path, "multipartstreamer.go")
 	stat, _ := os.Stat(file)
@@ -77,5 +77,48 @@ func TestMultipart(t *testing.T) {
 	part, err = reader.NextPart()
 	if err != io.EOF {
 		t.Errorf("Unexpected 3rd part: %s", part)
+	}
+}
+
+func TestMultipartReader(t *testing.T) {
+	ms := New()
+
+	err := ms.WriteReader("file", "code/bass", 3, bytes.NewBufferString("ABC"))
+	if err != nil {
+		t.Fatalf("Error writing reader: %s", err)
+	}
+
+	if size := ms.Len(); size != 239 {
+		t.Errorf("Unexpected multipart size: %d", size)
+	}
+
+	data, err := ioutil.ReadAll(ms.GetReader())
+	if err != nil {
+		t.Fatalf("Error reading multipart data: %s", err)
+	}
+
+	buf := bytes.NewBuffer(data)
+	reader := multipart.NewReader(buf, ms.Boundary())
+
+	part, err := reader.NextPart()
+	if err != nil {
+		t.Fatalf("Expected file field: %s", err)
+	}
+
+	if str := part.FileName(); str != "bass" {
+		t.Errorf("Unexpected filename: %s", str)
+	}
+
+	if str := part.FormName(); str != "file" {
+		t.Errorf("Unexpected form name: %s", str)
+	}
+
+	if by, _ := ioutil.ReadAll(part); string(by) != "ABC" {
+		t.Errorf("Unexpected file value")
+	}
+
+	part, err = reader.NextPart()
+	if err != io.EOF {
+		t.Errorf("Unexpected 2nd part: %s", part)
 	}
 }
