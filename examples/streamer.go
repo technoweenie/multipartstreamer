@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/technoweenie/multipartstreamer.go"
+	"github.com/technoweenie/multipartstreamer"
 	"io"
 	"os"
 	"path/filepath"
