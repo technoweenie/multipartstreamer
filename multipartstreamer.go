@@ -27,7 +27,7 @@ type MultipartStreamer struct {
 
 // New initializes a new MultipartStreamer.
 func New() (m *MultipartStreamer) {
-	m = &MultipartStreamer{bodyBuffer: bytes.NewBufferString("")}
+	m = &MultipartStreamer{bodyBuffer: new(bytes.Buffer)}
 
 	m.bodyWriter = multipart.NewWriter(m.bodyBuffer)
 	boundary := m.bodyWriter.Boundary()
