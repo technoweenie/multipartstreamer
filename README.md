@@ -8,7 +8,7 @@ combine an inner multipart.Reader with a file handle.
 package main
 
 import (
-  "github.com/technoweenie/multipartstreamer.go"
+  "github.com/technoweenie/multipartstreamer"
   "net/http"
 )
 
